@@ -8,6 +8,10 @@ services:
       - ./data:/data
     environment:
       - WORKSHOP_DIR=/data/workshop
+      # Docker spawns SteamCMD containers against the HOST daemon, so volume mounts
+      # must use HOST-side absolute paths. Set this to the absolute path of ./data
+      # on the host machine (e.g. /home/ubuntu/zomboid-mod-id-extracter/data).
+      - HOST_DATA_DIR=${HOST_DATA_DIR:-/home/ubuntu/zomboid-mod-id-extracter/data}
       - DB_PATH=/data/db.sqlite
       - STEAMCMD_IMAGE=sonroyaalmerol/steamcmd-arm64
     restart: unless-stopped

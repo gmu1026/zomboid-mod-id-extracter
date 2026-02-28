@@ -5,12 +5,17 @@ from .config import settings
 
 
 async def download_workshop_item(workshop_id: str) -> Path:
+    # Container-side path for reading results after the SteamCMD container exits
     output_dir = Path(settings.workshop_dir) / workshop_id
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Docker socket mounts are resolved by the HOST daemon, so volume paths
+    # must be absolute HOST paths, not container-internal paths.
+    host_output_dir = Path(settings.host_data_dir) / "workshop" / workshop_id
+
     proc = await asyncio.create_subprocess_exec(
         "docker", "run", "--rm",
-        "-v", f"{output_dir}:/output",
+        "-v", f"{host_output_dir}:/output",
         settings.steamcmd_image,
         "+force_install_dir", "/output",
         "+login", "anonymous",
