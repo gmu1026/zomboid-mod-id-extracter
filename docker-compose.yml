@@ -1,0 +1,13 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/data
+    environment:
+      - WORKSHOP_DIR=/data/workshop
+      - DB_PATH=/data/db.sqlite
+      - STEAMCMD_IMAGE=sonroyaalmerol/steamcmd-arm64
+    restart: unless-stopped
