@@ -1,9 +1,7 @@
 FROM python:3.11-slim
 
-# Docker CLI for spawning SteamCMD containers
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    docker.io \
-    && rm -rf /var/lib/apt/lists/*
+# Copy Docker CLI binary from the official image (ARM64-compatible)
+COPY --from=docker:27-cli /usr/local/bin/docker /usr/local/bin/docker
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
