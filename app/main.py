@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 
 from .database import init_db
-from .jobs import create_job, get_job, get_workshop_cache
+from .jobs import create_job, get_all_jobs, get_job, get_workshop_cache
 from .models import JobCreate, JobResponse
 from .worker import job_queue, start_worker
 
@@ -18,6 +18,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Zomboid Mod Extractor", lifespan=lifespan)
+
+
+@app.get("/jobs", response_model=list[JobResponse])
+async def list_jobs():
+    """List recent jobs ordered by creation time."""
+    return await get_all_jobs()
 
 
 @app.post("/jobs", response_model=JobResponse, status_code=202)

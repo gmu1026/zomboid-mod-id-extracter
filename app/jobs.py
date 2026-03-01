@@ -57,6 +57,27 @@ async def append_progress(job_id: str, workshop_id: str, step: str, message: str
     await update_job(job_id, progress=progress)
 
 
+async def get_all_jobs(limit: int = 100) -> list[dict]:
+    async with aiosqlite.connect(settings.db_path) as db:
+        db.row_factory = aiosqlite.Row
+        async with db.execute(
+            "SELECT * FROM jobs ORDER BY created_at DESC LIMIT ?", (limit,)
+        ) as cur:
+            rows = await cur.fetchall()
+            return [
+                {
+                    "id": row["id"],
+                    "status": row["status"],
+                    "workshop_ids": json.loads(row["workshop_ids"]),
+                    "progress": json.loads(row["progress"]),
+                    "result": json.loads(row["result"]) if row["result"] else None,
+                    "error": row["error"],
+                    "created_at": row["created_at"],
+                }
+                for row in rows
+            ]
+
+
 async def get_workshop_cache(workshop_id: str) -> dict | None:
     async with aiosqlite.connect(settings.db_path) as db:
         async with db.execute(
