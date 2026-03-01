@@ -15,6 +15,7 @@ async def _run_steamcmd(host_output_dir: Path) -> tuple[int, str]:
         "-v", f"{host_output_dir}:/output",
         "--entrypoint", settings.steamcmd_entrypoint,
         settings.steamcmd_image,
+        "-tcp",
         "+force_install_dir", "/output",
         "+login", "anonymous",
         "+workshop_download_item", "108600", host_output_dir.name,
