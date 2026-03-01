@@ -11,6 +11,7 @@ _RETRY_DELAY = 5  # seconds between retries
 async def _run_steamcmd(host_output_dir: Path) -> tuple[int, str]:
     proc = await asyncio.create_subprocess_exec(
         "docker", "run", "--rm",
+        "--network", "host",
         "-v", f"{host_output_dir}:/output",
         "--entrypoint", settings.steamcmd_entrypoint,
         settings.steamcmd_image,
