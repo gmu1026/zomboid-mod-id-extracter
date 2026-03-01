@@ -16,6 +16,7 @@ async def download_workshop_item(workshop_id: str) -> Path:
     proc = await asyncio.create_subprocess_exec(
         "docker", "run", "--rm",
         "-v", f"{host_output_dir}:/output",
+        "--entrypoint", settings.steamcmd_entrypoint,
         settings.steamcmd_image,
         "+force_install_dir", "/output",
         "+login", "anonymous",
